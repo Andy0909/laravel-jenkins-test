@@ -12,12 +12,12 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $stock = Stock::find(1);
+        $product = Stock::where('id','1')->get();
  
-        $stock->stock = $stock->stock - 1;
- 
-        $stock->save();
-        
+        $stock = $product[0]->stock;
+
+        Stock::where('id', 1)->update(['stock' => $stock - 1]);
+
         return response()->json(Stock::where('id','1')->get());
     }
 
