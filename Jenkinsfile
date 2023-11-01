@@ -1,42 +1,54 @@
 pipeline {
     agent any
-
     environment {
         AWS_ACCOUNT_ID = "422351898213"
         AWS_DEFAULT_REGION = "ap-northeast-1"
         IMAGE_REPO_NAME = "laravel"
         IMAGE_TAG = "latest"
-        REPOSITORY_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}"
+        REPOSITORY_URI = "422351898213.dkr.ecr.ap-northeast-1.amazonaws.com/laravel"
+        CLUSTER = "devCluster"
+        SERVICE = "laravel-service"
     }
-
+   
     stages {
-        stage("CICD start") {
+        
+        stage('Logging into AWS ECR') {
             steps {
-                echo 'CICD start'
+                script {
+                    sh """aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"""
+                }  
             }
         }
-
-        /*stage("logging AWS ECR") {
+        
+        stage('Cloning Git') {
             steps {
-                script {
-                    sh "aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
-                }
+                checkout([$class: 'GitSCM', branches: [[name: '*/stage']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '', url: 'https://github.com/Andy0909/laravel-jenkins-test.git']]])     
             }
-        }*/
-
-        stage("build image") {
+        }
+  
+        // Building Docker images
+        stage('Building image') {
             steps {
                 script {
-                    dockerImage = docker.build "${IMAGE_REPO_NAME} : ${IMAGE_TAG}"
+                    dockerImage = docker.build "${IMAGE_REPO_NAME}:${IMAGE_TAG}"
                 }
             }
         }
-
-        stage("push to AWS ECR") {
-            steps {
+   
+        // Uploading Docker images into AWS ECR
+        stage('Pushing to ECR') {
+            steps {  
                 script {
-                    sh "docker tag ${IMAGE_REPO_NAME}:${IMAGE_TAG} ${REPOSITORY_URI}:${IMAGE_TAG}"
-                    sh "docker push ${REPOSITORY_URI}:${IMAGE_TAG}"
+                    sh """docker tag ${IMAGE_REPO_NAME}:${IMAGE_TAG} ${REPOSITORY_URI}:$IMAGE_TAG"""
+                    sh """docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:${IMAGE_TAG}"""
+                }
+            }
+        }
+        
+        stage('Deploy to ECS') {
+            steps {
+                withAWS (credentials: 'aws-jenkins-credentials', region: "${AWS_DEFAULT_REGION}") {
+                    sh 'aws ecs update-service --cluster ${CLUSTER} --service ${SERVICE} --force-new-deployment'
                 }
             }
         }
