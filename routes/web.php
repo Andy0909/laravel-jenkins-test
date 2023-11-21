@@ -18,6 +18,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/getProductStock', [ProductController::class, 'index']);
-
-Route::get('/modifyProductStock', [ProductController::class, 'modify']);
+Route::get('/hello', function () {
+    return 'hello world';
+});

@@ -40,19 +40,22 @@ pipeline {
         stage('Pushing to ECR') {
             steps {  
                 script {
-                    sh """docker tag ${IMAGE_REPO_NAME}:${IMAGE_TAG} ${REPOSITORY_URI}:$IMAGE_TAG"""
+                    sh """docker tag ${IMAGE_REPO_NAME}:${IMAGE_TAG} ${REPOSITORY_URI}:${IMAGE_TAG}"""
                     sh """docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:${IMAGE_TAG}"""
                     sh """echo push to ECR"""
                 }
             }
         }
         
-        /*stage('Deploy to ECS') {
+        stage('Deploy to ECS') {
             steps {
-                withAWS (credentials: 'aws-jenkins-credentials', region: "${AWS_DEFAULT_REGION}") {
+                /*withAWS (credentials: 'aws-jenkins-credentials', region: "${AWS_DEFAULT_REGION}") {
                     sh 'aws ecs update-service --cluster ${CLUSTER} --service ${SERVICE} --force-new-deployment'
+                }*/
+                script {
+                    sh """aws ecs update-service --cluster ${CLUSTER} --service ${SERVICE} --force-new-deployment"""
                 }
             }
-        }*/
+        }
     }
 }
