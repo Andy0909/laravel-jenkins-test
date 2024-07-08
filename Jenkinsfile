@@ -11,7 +11,6 @@ pipeline {
     }
    
     stages {
-        
         stage('Logging into AWS ECR') {
             steps {
                 script {
@@ -47,12 +46,12 @@ pipeline {
             }
         }
         
-        stage('Deploy to ECS') {
+        /*stage('Deploy to ECS') {
             steps {
-                withAWS (credentials: 'aws-jenkins-credentials', region: "${AWS_DEFAULT_REGION}") {
-                    sh 'aws ecs update-service --cluster ${CLUSTER} --service ${SERVICE} --force-new-deployment'
+                script {
+                    sh """aws ecs update-service --cluster ${CLUSTER} --service ${SERVICE} --force-new-deployment"""
                 }
             }
-        }
+        }*/
     }
 }
