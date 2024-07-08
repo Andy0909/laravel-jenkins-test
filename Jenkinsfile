@@ -30,7 +30,6 @@ pipeline {
             steps {
                 script {
                     sh """ docker build -t ${IMAGE_REPO_NAME}:${IMAGE_TAG} ."""
-                    //dockerImage = docker.build "${IMAGE_REPO_NAME}:${IMAGE_TAG}"
                 }
             }
         }
@@ -41,7 +40,6 @@ pipeline {
                 script {
                     sh """docker tag ${IMAGE_REPO_NAME}:${IMAGE_TAG} ${REPOSITORY_URI}:${IMAGE_TAG}"""
                     sh """docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:${IMAGE_TAG}"""
-                    sh """echo push to ECR"""
                 }
             }
         }
