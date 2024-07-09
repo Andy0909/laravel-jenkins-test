@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 
@@ -14,10 +15,6 @@ use App\Http\Controllers\ProductController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::post('/products', [ProductController::class, 'create']);
+Route::get('/products', [ProductController::class, 'index']);
 
-Route::get('/hello', function () {
-    return 'hello world';
-});

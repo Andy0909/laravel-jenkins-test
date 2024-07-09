@@ -3,76 +3,28 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Stock;
+use App\Models\Product;
 
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // 创建产品
+    public function create(Request $request)
+    {
+        $product = $request->all();
+
+        $result = Product::create(['productName' => $product['productName'],]);
+
+        return response()->json($result);
+    }
+
+    // 获取所有产品
     public function index()
     {
-        $product = Stock::where('id','1')->get();
+        $products = Product::all();
+        $productName = $products[0]['productName'];
 
-        return $product;
-    }
-
-    public function modify()
-    {
-        $product = Stock::where('id','1')->get();
- 
-        $stock = $product[0]->stock;
-
-        Stock::where('id', 1)->update(['stock' => $stock - 1]);
-
-        return Stock::where('id','1')->get();
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return view('welcome', [
+            'productName'  => $productName,
+        ]);
     }
 }
