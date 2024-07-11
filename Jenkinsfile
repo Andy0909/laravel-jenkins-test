@@ -6,8 +6,8 @@ pipeline {
         IMAGE_REPO_NAME = "laravel"
         IMAGE_TAG = "latest"
         REPOSITORY_URI = "422351898213.dkr.ecr.ap-northeast-1.amazonaws.com/laravel"
-        CLUSTER = "devCluster"
-        SERVICE = "my-laravel-service"
+        CLUSTER = "phpProjectCluster"
+        SERVICE = "laravel-service"
     }
    
     stages {
@@ -44,12 +44,12 @@ pipeline {
             }
         }
         
-        /*stage('Deploy to ECS') {
+        stage('Deploy to ECS') {
             steps {
                 script {
                     sh """aws ecs update-service --cluster ${CLUSTER} --service ${SERVICE} --force-new-deployment"""
                 }
             }
-        }*/
+        }
     }
 }
