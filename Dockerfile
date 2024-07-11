@@ -26,7 +26,11 @@ RUN composer install --no-dev --optimize-autoloader --no-scripts
 RUN chown -R www-data:www-data /var/www
 RUN chmod -R 777 /var/www/storage
 
+# 創建一個啟動腳本
+COPY start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
+
 # 指定容器內的 PHP-FPM 服務為執行入口點
-CMD ["php-fpm"]
+ENTRYPOINT ["start.sh"]
 
 EXPOSE 9000
