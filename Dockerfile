@@ -18,7 +18,7 @@ WORKDIR /var/www
 COPY . /var/www
 
 # 安裝 Laravel 相依套件
-RUN composer install --optimize-autoloader --no-dev
+RUN composer install --no-scripts
 
 # 設置文件權限
 RUN chown -R www-data:www-data /var/www
