@@ -19,9 +19,6 @@ WORKDIR /var/www
 # 複製 Laravel 應用程式內容
 COPY . /var/www
 
-# 複製 .env 文件
-COPY .env /var/www/.env
-
 # 安裝 Laravel 相依套件
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
@@ -30,9 +27,6 @@ RUN php artisan view:clear
 RUN php artisan route:clear
 RUN php artisan config:clear
 RUN php artisan cache:clear
-
-# 執行 migrate 命令
-RUN php artisan migrate --force
 
 # 設置文件權限
 RUN chown -R www-data:www-data /var/www
