@@ -22,15 +22,17 @@ COPY . /var/www
 # 安裝 Laravel 相依套件
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
+# 清除 Laravel 緩存
+RUN php artisan view:clear
+RUN php artisan route:clear
+RUN php artisan config:clear
+RUN php artisan cache:clear
+
 # 設置文件權限
 RUN chown -R www-data:www-data /var/www
 RUN chmod -R 777 /var/www/storage
 
-# 創建一個啟動腳本
-COPY start.sh /usr/local/bin/start.sh
-RUN chmod +x /usr/local/bin/start.sh
-
 # 指定容器內的 PHP-FPM 服務為執行入口點
-ENTRYPOINT ["start.sh"]
+CMD ["php-fpm"]
 
 EXPOSE 9000
