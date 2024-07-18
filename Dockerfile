@@ -1,5 +1,5 @@
 # 使用 PHP 官方映像作為基底
-FROM php:8.3.9-fpm
+FROM - platform=linux/amd64 php:8.3.9-fpm
 
 # 安裝必要的工具和 PHP 擴展
 RUN apt-get update && apt-get install -y \
@@ -22,15 +22,18 @@ COPY . /var/www
 # 安裝 Laravel 相依套件
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
-# 清除 Laravel 緩存
-RUN php artisan view:clear
-RUN php artisan route:clear
-RUN php artisan config:clear
-RUN php artisan cache:clear
-
 # 設置文件權限
 RUN chown -R www-data:www-data /var/www
 RUN chmod -R 777 /var/www/storage
+
+# 清除 Laravel 緩存
+RUN php artisan view:clear \
+    && php artisan route:clear \
+    && php artisan config:clear \
+    && php artisan cache:clear
+
+# 印出 public 資料夾裡面的內容
+RUN ls -la /var/www/public/css
 
 # 指定容器內的 PHP-FPM 服務為執行入口點
 CMD ["php-fpm"]
