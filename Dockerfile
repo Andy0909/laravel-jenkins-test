@@ -25,9 +25,11 @@ RUN composer install --no-dev --optimize-autoloader --no-scripts
 # 設置文件權限
 RUN chown -R www-data:www-data /var/www
 RUN chmod -R 777 /var/www/storage
+RUN chmod -R 777 /var/www/public
 
 # 清除 Laravel 緩存
-RUN php artisan view:clear \
+RUN composer dump-autoload \
+    && php artisan view:clear \
     && php artisan route:clear \
     && php artisan config:clear \
     && php artisan cache:clear

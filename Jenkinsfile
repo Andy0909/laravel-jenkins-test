@@ -7,7 +7,7 @@ pipeline {
         IMAGE_TAG = "latest"
         REPOSITORY_URI = "422351898213.dkr.ecr.ap-northeast-1.amazonaws.com/laravel"
         CLUSTER = "phpProjectCluster"
-        SERVICE = "laravel-test-service"
+        SERVICE = "laravel-service-lb"
     }
    
     stages {
