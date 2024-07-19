@@ -13,24 +13,17 @@ RUN docker-php-ext-install pdo_mysql zip
 # 安裝 Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# 安裝 Node.js 和 npm
-RUN curl -fsSL https://deb.nodesource.com/setup_14.x | bash - \
-    && apt-get install -y nodejs
-
 # 設定工作目錄
 WORKDIR /var/www
 
 # 複製 Laravel 應用程式內容
 COPY . /var/www
 
+# 印出 public 資料夾裡面的內容
+RUN ls -la /var/www/public/css
+
 # 安裝 Laravel 相依套件
 RUN composer install --no-dev --optimize-autoloader --no-scripts
-
-# 安裝 npm 套件
-RUN npm install
-
-# 進行前端構建
-RUN npm run build
 
 # 設置文件權限
 RUN chown -R www-data:www-data /var/www
@@ -42,9 +35,6 @@ RUN php artisan config:cache \
     && php artisan cache:clear \
     && php artisan view:clear \
     && php artisan route:clear
-
-# 印出 public 資料夾裡面的內容
-RUN ls -la /var/www/public/css
 
 # 指定容器內的 PHP-FPM 服務為執行入口點
 CMD ["php-fpm"]
