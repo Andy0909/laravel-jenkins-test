@@ -13,6 +13,10 @@ RUN docker-php-ext-install pdo_mysql zip
 # 安裝 Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
+# 安裝 Node.js 和 npm
+RUN curl -fsSL https://deb.nodesource.com/setup_14.x | bash - \
+    && apt-get install -y nodejs
+
 # 設定工作目錄
 WORKDIR /var/www
 
