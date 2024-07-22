@@ -19,9 +19,6 @@ WORKDIR /var/www
 # 複製 Laravel 應用程式內容
 COPY . /var/www
 
-# 印出 public 資料夾裡面的內容
-RUN ls -la /var/www/public/css
-
 # 安裝 Laravel 相依套件
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
@@ -29,6 +26,7 @@ RUN composer install --no-dev --optimize-autoloader --no-scripts
 RUN chown -R www-data:www-data /var/www
 RUN chmod -R 777 /var/www/storage
 RUN chmod -R 777 /var/www/public
+RUN chmod -R 777 /var/www/public/css/style.css
 RUN chmod -R 777 storage bootstrap/cache
 
 # 清除 Laravel 緩存
